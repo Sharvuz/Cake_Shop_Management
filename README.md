@@ -1,3 +1,5 @@
+## using Angular CLI version 21.2.10.
+
 ### mở terminal 1
 	cd Backend
 	dotnet watch run --project CakeSoft.Api
@@ -19,8 +21,3 @@ done
     
     employee3
     Employee@123
-
-
-
-
-NHỚ BẬT SQL SEREVEr
