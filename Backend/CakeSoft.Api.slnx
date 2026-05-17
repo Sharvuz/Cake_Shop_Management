@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="CakeSoft.Api.BLL/CakeSoft.Api.BLL.csproj" Id="48572614-ae48-462e-823e-31d27e32b3cd" />
+    <Project Path="CakeSoft.Api.DAL/CakeSoft.Api.DAL.csproj" Id="fd559169-25c6-47ea-8e20-a96c5af32537" />
+    <Project Path="CakeSoft.Api/CakeSoft.Api.csproj" Id="577253fb-8738-4d10-abfe-1d671f9629a1" />
+  </Folder>
+  <Project Path="CakeSoft.Api.DTO/CakeSoft.Api.DTO.csproj" Id="a6d492ff-12a7-4941-8cd8-6eae9cbed9f9" />
+</Solution>

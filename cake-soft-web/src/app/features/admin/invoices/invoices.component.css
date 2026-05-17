@@ -1,0 +1,83 @@
+
+.inv-actions { display:flex; align-items:center; gap:.75rem; }
+.filter-select { min-width:200px; }
+.select-opt { padding:.5rem 1rem; cursor:pointer; border-radius:.5rem; color:#374151; font-weight:500; transition:background .15s; }
+.select-opt:hover { background:#fef2f2; color:var(--color-rose); }
+
+.btn-refresh {
+  width:2.5rem; height:2.5rem; border-radius:50%; border:1px solid #e2e8f0;
+  background:#fff; color:#64748b; cursor:pointer; display:flex; align-items:center;
+  justify-content:center; transition:all .2s; font-size:1rem;
+}
+.btn-refresh:hover { background:#f1f5f9; color:var(--color-rose); border-color:#fecdd3; transform:rotate(30deg); }
+
+.col-id { width:7rem; }
+.col-user { min-width:10rem; }
+.col-date { min-width:10rem; color:#64748b; font-size:.875rem; }
+.col-amount { min-width:9rem; }
+.col-status { min-width:9rem; }
+.col-action { width:6rem; text-align:center; }
+
+.id-badge { font-weight:700; color:#1e293b; font-family:monospace; font-size:.9rem; }
+
+.user-cell { display:flex; align-items:center; gap:.6rem; }
+.avatar {
+  width:2rem; height:2rem; border-radius:50%; background:linear-gradient(135deg,var(--color-rose),var(--color-orange));
+  color:#fff; font-weight:700; font-size:.8rem; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+.amount { font-weight:700; color:var(--color-rose); font-size:.95rem; }
+
+.status-pill { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .85rem; border-radius:999px; font-size:.75rem; font-weight:700; letter-spacing:.04em; }
+.status-pill i { font-size:.7rem; }
+.status-pending   { background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; }
+.status-processing{ background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+.status-completed { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+.status-cancelled { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+
+
+.empty-state { text-align:center; padding:4rem 1rem; color:#94a3b8; }
+.empty-state i { font-size:2.5rem; display:block; margin-bottom:.75rem; opacity:.4; }
+
+.dlg-header { width:100%; }
+.dlg-title { font-size:1.3rem; font-weight:800; color:#1e293b; margin-right:10px; }
+.dlg-body { padding:1.75rem 2rem; }
+.dlg-info-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1rem;
+  background:#f8fafc; padding:1.5rem; border-radius:1rem; border:1px solid #f1f5f9; margin-bottom:1.5rem;
+}
+.col-span-2 { grid-column:1/-1; }
+.info-item { display:flex; flex-direction:column; gap:.3rem; }
+.info-label { font-size:.75rem; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+.info-val { font-weight:700; color:#1e293b; font-size:1rem; }
+.dlg-section-title { font-weight:700; color:#334155; margin:0 0 .875rem; font-size:.95rem; }
+.dlg-items { display:flex; flex-direction:column; gap:.75rem; }
+.dlg-item {
+  display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem;
+  border:1px solid #f1f5f9; border-radius:.875rem; transition:background .15s;
+}
+.dlg-item:hover { background:#fafafa; }
+.item-img { width:3.5rem; height:3.5rem; border-radius:.625rem; object-fit:cover; border:1px solid #e2e8f0; flex-shrink:0; }
+.item-info { flex:1; display:flex; flex-direction:column; gap:.2rem; }
+.item-info strong { color:#1e293b; font-size:.9rem; }
+.item-info span { color:var(--color-rose); font-size:.8rem; font-weight:500; }
+.item-name-wrap { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+.item-name-deleted { text-decoration:line-through; color:#94a3b8 !important; }
+.item-deleted-badge {
+  display:inline-flex; align-items:center; padding:.15rem .5rem;
+  background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; border-radius:999px;
+  font-size:.65rem; font-weight:700; letter-spacing:.03em;
+}
+.dlg-item-deleted { background:#fefafa !important; border-color:#fee2e2 !important; }
+.item-total { font-weight:800; color:#1e293b; font-size:.95rem; white-space:nowrap; }
+.dlg-total {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:1.25rem; padding-top:1.25rem; border-top:2px dashed #f1f5f9;
+}
+.dlg-total span { color:#64748b; font-weight:600; font-size:1rem; }
+.dlg-total strong { color:var(--color-rose); font-size:1.4rem; font-weight:800; }
+.dlg-footer {
+  display:flex; justify-content:flex-end; gap:.75rem;
+  padding:1.25rem 2rem;
+}

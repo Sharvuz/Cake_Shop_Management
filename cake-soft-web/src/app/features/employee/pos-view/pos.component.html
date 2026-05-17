@@ -1,0 +1,90 @@
+<p-confirmdialog></p-confirmdialog>
+<div class="pos-wrap">
+  <div class="pos-left">
+    <div class="pos-filter-bar">
+      <h2 class="pos-left-title">Sản phẩm</h2>
+      <p-select [options]="categories" [(ngModel)]="selectedCategoryId" (onChange)="filterCakes()"
+        [showClear]="true" optionLabel="name" optionValue="id"
+        placeholder="Tất cả danh mục"
+        styleClass="filter-select"
+        panelStyleClass="bg-white rounded-xl shadow-xl mt-1 p-1">
+        <ng-template let-category pTemplate="item">
+          <div class="dd-item">{{ category.name }}</div>
+        </ng-template>
+      </p-select>
+    </div>
+
+    <div class="cake-grid-wrap">
+      <div *ngIf="filteredCakes.length === 0" class="cake-empty">
+        <i class="pi pi-search"></i>
+        <p>Không tìm thấy sản phẩm nào.</p>
+      </div>
+
+      <div class="cake-grid">
+        <div *ngFor="let cake of filteredCakes" class="cake-card" (click)="addToCart(cake)">
+          <div class="cake-img-wrap">
+            <img [src]="getImageUrl(cake.imageUrl)" [alt]="cake.name" class="cake-img" />
+            <span class="stock-badge">Kho: {{ cake.quantity }}</span>
+            <span *ngIf="cake.quantity === 0" class="out-of-stock">Hết hàng</span>
+          </div>
+
+          <div class="cake-info">
+            <p-tag [value]="cake.categoryName" severity="secondary" styleClass="text-xs self-start"></p-tag>
+            <h3 class="cake-name">{{ cake.name }}</h3>
+            <div class="cake-footer">
+              <span class="cake-price">{{ cake.price | currency:'VND':'symbol' }}</span>
+              <button class="cart-add-btn" [disabled]="cake.quantity === 0"
+                (click)="$event.stopPropagation(); addToCart(cake)">
+                <i class="pi pi-cart-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pos-right">
+    <div class="cart-header">
+      <h2 class="cart-title"><i class="pi pi-shopping-cart"></i> Giỏ hàng</h2>
+      <p class="cart-count">{{ cart.length }} sản phẩm</p>
+    </div>
+
+    <div class="cart-items">
+      <div *ngIf="cart.length === 0" class="cart-empty">
+        <i class="pi pi-shopping-cart"></i>
+        <p>Chưa có sản phẩm nào</p>
+      </div>
+
+      <div *ngFor="let item of cart" class="cart-item">
+        <img [src]="getImageUrl(item.cake.imageUrl)" [alt]="item.cake.name" class="cart-img" />
+        <div class="cart-item-info">
+          <h4 class="cart-item-name">{{ item.cake.name }}</h4>
+          <p class="cart-item-price">{{ item.cake.price | currency:'VND':'symbol' }}</p>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" (click)="decreaseQuantity(item)">
+            <i class="pi pi-minus"></i>
+          </button>
+          <span class="qty-val">{{ item.quantity }}</span>
+          <button class="qty-btn" (click)="increaseQuantity(item)">
+            <i class="pi pi-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Tổng thanh toán</span>
+        <span class="cart-total-amount">{{ totalAmount | currency:'VND':'symbol' }}</span>
+      </div>
+      <button class="btn-checkout"
+        [disabled]="cart.length === 0 || isSubmitting"
+        (click)="checkout()">
+        <i class="pi" [class.pi-check-circle]="!isSubmitting" [class.pi-spin]="isSubmitting" [class.pi-spinner]="isSubmitting"></i>
+        {{ isSubmitting ? 'Đang xử lý...' : 'Thanh Toán & Tạo Đơn' }}
+      </button>
+    </div>
+  </div>
+</div>

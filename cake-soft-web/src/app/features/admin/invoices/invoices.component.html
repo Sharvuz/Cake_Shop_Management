@@ -1,0 +1,153 @@
+<p-toast></p-toast>
+<p-confirmdialog></p-confirmdialog>
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title"><i class="pi pi-file-edit"></i> Lịch sử Hóa đơn</h2>
+      <p class="page-subtitle">Quản lý và theo dõi trạng thái đơn hàng.</p>
+    </div>
+    <div class="inv-actions">
+      <p-select [options]="statusOptions" [(ngModel)]="filterStatus" (onChange)="loadInvoices()"
+        [showClear]="true" placeholder="Lọc theo trạng thái"
+        styleClass="filter-select"
+        panelStyleClass="bg-white rounded-xl shadow-xl mt-1 p-1">
+        <ng-template let-opt pTemplate="item">
+          <div class="select-opt">{{ opt.label }}</div>
+        </ng-template>
+      </p-select>
+      <button class="btn-refresh" (click)="loadInvoices()" title="Tải lại">
+        <i class="pi pi-refresh"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <p-table [value]="invoices" [paginator]="true" [rows]="10"
+      responsiveLayout="scroll" [rowHover]="true"
+      styleClass="admin-table">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-id">Mã Đơn</th>
+          <th class="col-user">Người tạo</th>
+          <th class="col-date">Thời gian</th>
+          <th class="col-amount">Tổng tiền</th>
+          <th class="col-status">Trạng thái</th>
+          <th class="col-action">Thao tác</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-invoice>
+        <tr class="inv-row">
+          <td class="col-id">
+            <span class="id-badge">#INV-{{ invoice.id | number:'3.0-0' }}</span>
+          </td>
+          <td class="col-user">
+            <div class="user-cell">
+              <div class="avatar">{{ invoice.userName?.charAt(0) | uppercase }}</div>
+              <span>{{ invoice.userName }}</span>
+            </div>
+          </td>
+          <td class="col-date">{{ invoice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="col-amount">
+            <span class="amount">{{ invoice.totalAmount | currency:'VND':'symbol' }}</span>
+          </td>
+          <td class="col-status">
+            <span class="status-pill" [class]="'status-' + invoice.status.toLowerCase()">
+              <i [class]="getStatusIcon(invoice.status)"></i>
+              {{ getStatusLabel(invoice.status) }}
+            </span>
+          </td>
+          <td class="col-action">
+            <button class="action-btn btn-view" (click)="viewDetails(invoice)" title="Xem chi tiết">
+              <i class="pi pi-eye"></i> Xem
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="empty-state">
+            <i class="pi pi-inbox"></i>
+            <p>Chưa có đơn hàng nào.</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+
+<p-dialog [(visible)]="displayDialog" [style]="{width:'620px'}" [modal]="true" styleClass="admin-dialog">
+  <ng-template pTemplate="header">
+    <div class="dlg-header">
+      <div class="flex items-center gap-4">
+        <span class="dlg-title">Hóa đơn #INV-{{ selectedInvoice?.id | number:'3.0-0' }}</span>
+        <span *ngIf="selectedInvoice" class="status-pill" [class]="'status-' + selectedInvoice.status.toLowerCase()">
+          {{ getStatusLabel(selectedInvoice.status) }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <div class="dlg-body">
+      <div class="dlg-info-grid">
+        <div class="info-item">
+          <span class="info-label">Người tạo</span>
+          <span class="info-val">{{ selectedInvoice?.userName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Thời gian</span>
+          <span class="info-val">{{ selectedInvoice?.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="info-item col-span-2" *ngIf="isAdmin && selectedInvoice?.status !== 'Completed' && selectedInvoice?.status !== 'Cancelled'">
+          <span class="info-label">Đổi trạng thái (Admin)</span>
+          <p-select [options]="statusOptions" [(ngModel)]="newStatus"
+            placeholder="Chọn trạng thái..." appendTo="body"
+            styleClass="w-full" panelStyleClass="bg-white rounded-xl shadow-xl mt-1 p-1">
+            <ng-template let-opt pTemplate="item">
+              <div class="select-opt">{{ opt.label }}</div>
+            </ng-template>
+          </p-select>
+        </div>
+      </div>
+
+      <h4 class="dlg-section-title">Danh sách sản phẩm</h4>
+      <div class="dlg-items">
+        <div *ngFor="let item of selectedInvoice?.details" class="dlg-item"
+          [class.dlg-item-deleted]="!item.cakeIsActive">
+          <img [src]="getImageUrl(item.imageUrl)" class="item-img"
+            [class.opacity-40]="!item.cakeIsActive" />
+          <div class="item-info">
+            <span class="item-name-wrap">
+              <strong [class.item-name-deleted]="!item.cakeIsActive">{{ item.cakeName }}</strong>
+              <span *ngIf="!item.cakeIsActive" class="item-deleted-badge">Đã xóa</span>
+            </span>
+            <span>{{ item.unitPrice | currency:'VND':'symbol' }} × {{ item.quantity }}</span>
+          </div>
+          <span class="item-total">{{ (item.unitPrice * item.quantity) | currency:'VND':'symbol' }}</span>
+        </div>
+      </div>
+
+      <div class="dlg-total">
+        <span>Tổng cộng</span>
+        <strong>{{ selectedInvoice?.totalAmount | currency:'VND':'symbol' }}</strong>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <div class="dlg-footer">
+      <button class="btn-secondary" (click)="displayDialog = false">
+        <i class="pi pi-times"></i> Đóng
+      </button>
+      <button *ngIf="isAdmin && newStatus && newStatus !== selectedInvoice?.status && selectedInvoice?.status !== 'Completed' && selectedInvoice?.status !== 'Cancelled'"
+        class="btn-primary" (click)="updateStatus()" [disabled]="isUpdating">
+        <i class="pi" [class.pi-check]="!isUpdating" [class.pi-spin]="isUpdating" [class.pi-spinner]="isUpdating"></i>
+        Cập nhật trạng thái
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

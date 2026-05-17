@@ -1,0 +1,168 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Xin chào, <span class="accent">{{ userName }}</span> 👋</h1>
+      <p class="page-subtitle">{{ isAdmin ? 'Tổng quan hoạt động kinh doanh của cửa hàng.' : 'Chúc bạn một ngày làm việc tràn đầy năng lượng!' }}</p>
+    </div>
+    <div class="badge-role" [class.admin]="isAdmin">
+      <i [class]="isAdmin ? 'pi pi-shield' : 'pi pi-user'"></i>
+      {{ isAdmin ? 'Quản trị viên' : 'Nhân viên' }}
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-box">
+    <i class="pi pi-spin pi-spinner"></i>
+    <span>Đang tải dữ liệu...</span>
+  </div>
+
+  <div *ngIf="!isLoading && isAdmin && adminData">
+    <div class="stats-grid">
+      <div class="stat-card gradient-rose">
+        <div class="stat-icon"><i class="pi pi-wallet"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Tổng Doanh Thu</p>
+          <h3 class="stat-value">{{ formatCurrency(adminData.totalRevenue) }}</h3>
+          <span class="stat-note"><i class="pi pi-check-circle"></i> Đơn hoàn thành</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon blue"><i class="pi pi-shopping-bag"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Tổng Đơn Hàng</p>
+          <h3 class="stat-value dark">{{ adminData.totalOrders | number }}</h3>
+          <span class="stat-note"><i class="pi pi-chart-line"></i> Toàn bộ đơn đã tạo</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon orange"><i class="pi pi-clock"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Đơn Chờ Xử Lý</p>
+          <h3 class="stat-value dark">{{ adminData.pendingOrders | number }}</h3>
+          <span class="stat-note"><i class="pi pi-exclamation-circle"></i> Cần ưu tiên</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon red"><i class="pi pi-box"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Sản Phẩm Hết Hàng</p>
+          <h3 class="stat-value dark">{{ adminData.outOfStockCakes | number }}</h3>
+          <span class="stat-note"><i class="pi pi-info-circle"></i> Cần nhập thêm</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon purple"><i class="pi pi-users"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Nhân Viên</p>
+          <h3 class="stat-value dark">{{ adminData.totalEmployees | number }}</h3>
+          <span class="stat-note"><i class="pi pi-id-card"></i> Đ đang hoạt động</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card chart-large">
+        <div class="chart-header">
+          <span class="chart-title"><i class="pi pi-chart-line"></i> Doanh Thu & Đơn Hàng (6 Tháng)</span>
+        </div>
+        <p-chart type="line" [data]="lineChartData" [options]="lineChartOptions" height="280px"></p-chart>
+      </div>
+
+      <div class="chart-card chart-small">
+        <div class="chart-header">
+          <span class="chart-title"><i class="pi pi-chart-pie"></i> Phân Bổ Trạng Thái</span>
+        </div>
+        <p-chart type="doughnut" [data]="doughnutData" [options]="doughnutOptions" height="280px"></p-chart>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:1.5rem">
+      <div class="chart-header">
+        <span class="chart-title"><i class="pi pi-star"></i> Top 5 Bánh Bán Chạy Nhất</span>
+      </div>
+      <p-chart type="bar" [data]="barChartData" [options]="barChartOptions" height="260px"></p-chart>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !isAdmin && employeeData">
+    <div class="stats-grid-emp">
+      <div class="stat-card gradient-green">
+        <div class="stat-icon"><i class="pi pi-dollar"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Doanh Thu Hôm Nay</p>
+          <h3 class="stat-value">{{ formatCurrency(employeeData.todayRevenue) }}</h3>
+          <span class="stat-note"><i class="pi pi-sun"></i> Thành tích hôm nay</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon blue"><i class="pi pi-receipt"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Đơn Chốt Hôm Nay</p>
+          <h3 class="stat-value dark">{{ employeeData.todayOrders | number }}</h3>
+          <span class="stat-note"><i class="pi pi-star"></i> Cố gắng phát huy!</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon orange"><i class="pi pi-spinner"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Đơn Đang Xử Lý</p>
+          <h3 class="stat-value dark">{{ employeeData.pendingOrders | number }}</h3>
+          <span class="stat-note"><i class="pi pi-info-circle"></i> Cần theo dõi</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon teal"><i class="pi pi-wallet"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Tổng Doanh Thu</p>
+          <h3 class="stat-value dark">{{ formatCurrency(employeeData.totalRevenue) }}</h3>
+          <span class="stat-note"><i class="pi pi-history"></i> Từ trước đến nay</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon indigo"><i class="pi pi-arrow-up-right"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Đơn Cao Nhất</p>
+          <h3 class="stat-value dark">{{ formatCurrency(employeeData.highestOrderAmount) }}</h3>
+          <span class="stat-note"><i class="pi pi-trophy"></i> Kỷ lục cá nhân</span>
+        </div>
+      </div>
+      <div class="stat-card white-card">
+        <div class="stat-icon pink"><i class="pi pi-calculator"></i></div>
+        <div class="stat-body">
+          <p class="stat-label">Trung Bình / Đơn</p>
+          <h3 class="stat-value dark">{{ formatCurrency(employeeData.averageOrderAmount) }}</h3>
+          <span class="stat-note"><i class="pi pi-chart-bar"></i> Giá trị trung bình</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:1.5rem">
+      <div class="chart-header">
+        <span class="chart-title"><i class="pi pi-chart-bar"></i> Đơn Hàng 7 Ngày Gần Nhất</span>
+      </div>
+      <p-chart type="bar" [data]="empBarData" [options]="empBarOptions" height="260px"></p-chart>
+    </div>
+
+    <div class="progress-row">
+      <div class="progress-card">
+        <div class="progress-header">
+          <span><i class="pi pi-check-circle" style="color:#10b981"></i> Đơn Hoàn Thành</span>
+          <strong style="color:#10b981">{{ employeeData.completedOrders }}</strong>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar green" [style.width]="getCompletedPct() + '%'"></div>
+        </div>
+        <span class="progress-pct">{{ getCompletedPct() | number:'1.0-0' }}% tổng đơn</span>
+      </div>
+      <div class="progress-card">
+        <div class="progress-header">
+          <span><i class="pi pi-times-circle" style="color:#ef4444"></i> Đơn Đã Hủy</span>
+          <strong style="color:#ef4444">{{ employeeData.cancelledOrders }}</strong>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar red" [style.width]="getCancelledPct() + '%'"></div>
+        </div>
+        <span class="progress-pct">{{ getCancelledPct() | number:'1.0-0' }}% tổng đơn</span>
+      </div>
+    </div>
+  </div>
+</div>

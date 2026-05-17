@@ -1,0 +1,164 @@
+<p-confirmdialog></p-confirmdialog>
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title"><i class="pi pi-users"></i> Quản lý Nhân viên</h2>
+      <p class="page-subtitle">Danh sách tài khoản nhân viên trong hệ thống</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateDialog()">
+      <i class="pi pi-user-plus"></i> Tạo tài khoản mới
+    </button>
+  </div>
+
+  <div class="table-card">
+    <p-table #dt [value]="employees" [paginator]="true" [rows]="10"
+      [globalFilterFields]="['fullName', 'username', 'email']"
+      responsiveLayout="scroll" styleClass="admin-table" [rowHover]="true">
+
+      <ng-template pTemplate="caption">
+        <div class="search-wrap">
+          <i class="pi pi-search search-icon"></i>
+          <input pInputText type="text"
+            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+            placeholder="Tìm theo tên, username, email..."
+            class="search-input" />
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-avatar">Avatar</th>
+          <th pSortableColumn="fullName" class="col-name">
+            Họ tên <p-sortIcon field="fullName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="username" class="col-user">
+            Username <p-sortIcon field="username"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email" class="col-email">
+            Email <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdAt" class="col-date">
+            Ngày tạo <p-sortIcon field="createdAt"></p-sortIcon>
+          </th>
+          <th class="col-status">Trạng thái</th>
+          <th class="col-action">Thao tác</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-emp>
+        <tr [class.row-inactive]="!emp.isActive">
+          <td class="col-avatar td-center">
+            <div class="emp-avatar" [class.avatar-inactive]="!emp.isActive">
+              {{ emp.fullName?.charAt(0)?.toUpperCase() || 'U' }}
+            </div>
+          </td>
+          <td>
+            <span class="emp-name" [class.name-inactive]="!emp.isActive">{{ emp.fullName }}</span>
+          </td>
+          <td class="col-user"><code class="username-code">{{ emp.username }}</code></td>
+          <td class="col-email text-muted">{{ emp.email || '—' }}</td>
+          <td class="col-date text-muted">{{ emp.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="col-status td-center">
+            <span *ngIf="emp.isActive" class="status-active"><i class="pi pi-check-circle"></i> Hoạt động</span>
+            <span *ngIf="!emp.isActive" class="status-locked"><i class="pi pi-lock"></i> Đã khóa</span>
+          </td>
+          <td class="col-action td-center">
+            <div class="action-btns">
+              <button class="action-btn btn-edit" (click)="openEditDialog(emp)" title="Chỉnh sửa" [disabled]="!emp.isActive">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button *ngIf="emp.isActive" class="action-btn btn-delete" (click)="deactivate(emp)" title="Khóa tài khoản">
+                <i class="pi pi-lock"></i>
+              </button>
+              <button *ngIf="!emp.isActive" class="action-btn btn-restore" (click)="reactivate(emp)" title="Mở khóa">
+                <i class="pi pi-lock-open"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="empty-msg">
+            <i class="pi pi-users"></i>
+            Chưa có nhân viên nào.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+
+<p-dialog [(visible)]="createDialog" [style]="{width: '520px'}" [modal]="true" styleClass="admin-dialog">
+  <ng-template pTemplate="header">
+    <div class="dlg-header">
+      <span class="dlg-title"><i class="pi pi-user-plus"></i> Tạo tài khoản nhân viên</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="dlg-body">
+      <div class="form-field">
+        <label class="form-label">Họ và tên <span class="req">*</span></label>
+        <input pInputText [(ngModel)]="newEmp.fullName" class="form-input" placeholder="Nhập họ tên..." />
+        <small class="um-err" *ngIf="submitted && !newEmp.fullName">Vui lòng nhập họ tên.</small>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Tên đăng nhập <span class="req">*</span></label>
+        <input pInputText [(ngModel)]="newEmp.username" class="form-input" placeholder="Nhập username..." />
+        <small class="um-err" *ngIf="submitted && !newEmp.username">Vui lòng nhập username.</small>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input pInputText [(ngModel)]="newEmp.email" class="form-input" placeholder="email@example.com" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Mật khẩu <span class="req">*</span></label>
+        <input pInputText type="password" [(ngModel)]="newEmp.password" class="form-input" placeholder="Tối thiểu 6 ký tự..." />
+        <small class="um-err" *ngIf="submitted && !newEmp.password">Vui lòng nhập mật khẩu.</small>
+      </div>
+      <p-message *ngIf="errorMessage" severity="error" styleClass="w-full mt-2" [text]="errorMessage"></p-message>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="dlg-footer">
+      <button class="btn-secondary" (click)="createDialog = false"><i class="pi pi-times"></i> Hủy</button>
+      <button class="btn-primary" (click)="createEmployee()" [disabled]="isSaving">
+        <i class="pi" [class.pi-check]="!isSaving" [class.pi-spin]="isSaving" [class.pi-spinner]="isSaving"></i>
+        Tạo tài khoản
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="editDialog" [style]="{width: '520px'}" [modal]="true" styleClass="admin-dialog">
+  <ng-template pTemplate="header">
+    <div class="dlg-header">
+      <span class="dlg-title"><i class="pi pi-user-edit"></i> Chỉnh sửa nhân viên</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <div class="dlg-body">
+      <div class="form-field">
+        <label class="form-label">Họ và tên</label>
+        <input pInputText [(ngModel)]="editEmp.fullName" class="form-input" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input pInputText [(ngModel)]="editEmp.email" class="form-input" />
+      </div>
+      <p-message *ngIf="errorMessage" severity="error" styleClass="w-full mt-2" [text]="errorMessage"></p-message>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="dlg-footer">
+      <button class="btn-secondary" (click)="editDialog = false"><i class="pi pi-times"></i> Hủy</button>
+      <button class="btn-primary" (click)="updateEmployee()" [disabled]="isSaving">
+        <i class="pi" [class.pi-check]="!isSaving" [class.pi-spin]="isSaving" [class.pi-spinner]="isSaving"></i>
+        Lưu thay đổi
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
