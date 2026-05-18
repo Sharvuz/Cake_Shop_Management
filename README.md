@@ -221,14 +221,6 @@ npm --version    # Kết quả: 11.12.1 trở lên
 
 ### Bước 2: Cấu Hình Database
 
-#### Tạo Database SQL Server
-```sql
--- SQL Server Management Studio
-CREATE DATABASE CakeSoft;
-
--- Hoặc sử dụng connection string trong appsettings.json
-```
-
 #### Cập Nhật Connection String
 ```json
 // Backend/CakeSoft.Api/appsettings.json
@@ -239,13 +231,7 @@ CREATE DATABASE CakeSoft;
 }
 ```
 
-#### Apply Migrations
-```bash
-cd Backend/CakeSoft.Api
-dotnet ef database update
-# Hoặc tạo migration mới
-dotnet ef migrations add YourMigrationName
-```
+
 
 ### Bước 3: Cài Đặt Backend
 
@@ -283,14 +269,6 @@ ng serve
 # Kết quả:
 # Application running on: http://localhost:4200
 ```
-
-### Bước 5: Xác Minh Cài Đặt
-
-- **Backend**: Truy cập `https://localhost:5001/swagger` để xem Swagger UI
-- **Frontend**: Truy cập `http://localhost:4200` để xem ứng dụng web
-- **Database**: Kết nối qua SQL Server Management Studio
-
----
 
 ## 🎯 Tính Năng Chính
 
